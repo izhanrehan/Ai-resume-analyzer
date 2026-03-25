@@ -1,11 +1,3 @@
-Bhai, samajh gaya! Aapko **SociNexus** ke level ka bilkul professional, structured aur attractive README chahiye jo recruiters aur open-source developers ko pehli nazar mein pasand aa jaye. 
-
-Aapke project ke hisab se (FastAPI + React) maine SociNexus ke standard par ye **Ultimate README.md** generate ki hai. Isko copy karke apne project ki root directory ki `README.md` file mein replace kar dein!
-
----
-
-### 📄 Professional `README.md` (SociNexus Level)
-
 ```markdown
 # 🚀 AI Resume Analyzer (Gemini AI Powered)
 
