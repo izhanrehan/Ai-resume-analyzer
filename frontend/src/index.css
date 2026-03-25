@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-50;
+}
+
+.container-custom {
+  @apply max-w-6xl mx-auto px-4 py-8;
+}
+
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200;
+}
+
+.btn-secondary {
+  @apply bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200;
+}
+
+.btn-outline {
+  @apply border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-2 px-6 rounded-lg transition duration-200;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-md p-6 border border-gray-100;
+}
+
+.card-result {
+  @apply bg-white rounded-lg shadow-lg p-6 border border-gray-200 hover:shadow-xl transition duration-200;
+}
+
+.progress-bar {
+  @apply w-full bg-gray-200 rounded-full h-3 overflow-hidden;
+}
+
+.progress-fill {
+  @apply h-full bg-green-500 transition duration-500;
+}
+
+.skill-badge {
+  @apply inline-block bg-blue-100 text-blue-800 text-sm font-semibold mr-2 mb-2 px-3 py-1 rounded-full;
+}
+
+.skill-badge-danger {
+  @apply inline-block bg-red-100 text-red-800 text-sm font-semibold mr-2 mb-2 px-3 py-1 rounded-full;
+}
+
+.fade-in {
+  @apply animate-fade-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

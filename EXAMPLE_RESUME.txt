@@ -1,0 +1,275 @@
+# Example Resume for Testing
+
+Use this example to test the AI Resume Analyzer application.
+
+```
+JOHN MICHAEL ANDERSON
+Senior Full Stack Software Engineer
+john.anderson@email.com | (555) 234-5678 | linkedin.com/in/johnanderson | github.com/janderson
+Denver, Colorado
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PROFESSIONAL SUMMARY
+
+Experienced Full Stack Engineer with 8+ years of expertise in developing scalable web applications
+and leading technical teams. Proficient in modern web technologies including React, Node.js, Python,
+and cloud platforms. Proven track record of designing and implementing microservices architecture,
+optimizing performance, and mentoring junior developers. Strong background in agile development
+methodologies and DevOps practices.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TECHNICAL SKILLS
+
+Programming Languages:
+  • Python, JavaScript, TypeScript, Java, SQL, Ruby, Go
+
+Frontend Development:
+  • React.js, Vue.js, Next.js, HTML5, CSS3, Tailwind CSS, Material-UI, Redux, Context API
+  • Responsive Design, Web Performance Optimization, SEO Optimization
+
+Backend Development:
+  • Node.js, Express.js, Django, FastAPI, Ruby on Rails, Spring Boot
+  • RESTful APIs, GraphQL, microservices architecture, design patterns
+
+Databases & Data:
+  • PostgreSQL, MySQL, MongoDB, Redis, Elasticsearch, Firebase, DynamoDB
+  • Data modeling, query optimization, database administration
+
+Cloud & DevOps:
+  • Amazon Web Services (AWS), Google Cloud Platform (GCP), Microsoft Azure
+  • Docker, Kubernetes, Jenkins, GitLab CI/CD, GitHub Actions
+  • Infrastructure as Code (Terraform, CloudFormation)
+  • Linux/Unix, Windows Server administration
+
+Tools & Platforms:
+  • Git, GitHub, GitLab, Bitbucket, JIRA, Confluence
+  • Docker Desktop, Postman, VS Code, IntelliJ, Docker Compose
+  • Datadog, New Relic, Splunk for monitoring and logging
+
+Additional:
+  • Agile/Scrum methodologies, Test-Driven Development (TDD)
+  • Unit testing (Jest, Pytest, Mocha), Integration testing
+  • Problem-solving, team leadership, mentoring
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PROFESSIONAL EXPERIENCE
+
+SENIOR FULL STACK ENGINEER
+TechVision Inc., Denver, Colorado | January 2022 – Present
+
+    Led the development and launch of 3 major features for the company's SaaS platform,
+    impacting 500+ enterprise clients with $2M annual recurring revenue
+
+    • Architected and implemented microservices system using Node.js and Python, reducing
+      response time by 45% and improving system scalability to handle 10x traffic increase
+    • Designed and implemented CI/CD pipeline using GitLab CI and Kubernetes, reducing
+      deployment time from 2 hours to 10 minutes and increasing team velocity by 30%
+    • Mentored and managed team of 5 junior developers, conducting code reviews and
+      technical training sessions, resulting in 2 promotions and improved code quality
+    • Migrated legacy monolithic application to containerized microservices using Docker
+      and Kubernetes, achieving 60% reduction in infrastructure costs
+    • Implemented comprehensive monitoring and logging using Datadog and ELK stack,
+      improving MTTR (Mean Time To Resolution) from 30 minutes to 5 minutes
+    • Led API redesign from REST to GraphQL, improving frontend query efficiency by 40%
+      and reducing over-fetching of data
+
+    Achievements:
+      - Employee of the Quarter (Q3 2023)
+      - Improved application performance by 50% through optimization
+      - Helped 3 engineers transition to senior roles through mentoring
+
+
+FULL STACK ENGINEER
+CloudScale Solutions, Boulder, Colorado | June 2019 – December 2021
+
+    Developed and deployed full-stack applications serving 50,000+ daily active users,
+    contributing to company achieving $10M Series A funding
+
+    • Built production React.js applications with TypeScript, achieving 99.9% uptime
+      and serving 100,000+ monthly requests with average latency < 100ms
+    • Developed Python/FastAPI microservices for real-time data processing, handling
+      40,000 requests per second with horizontal scaling capabilities
+    • Implemented PostgreSQL database optimization techniques, improving query performance
+      by 65% and reducing cloud database costs by $50K annually
+    • Set up and maintained AWS infrastructure including EC2, S3, CloudFront, RDS
+      supporting multiple production environments
+    • Established automated testing framework with pytest and Jest, achieving 85%
+      code coverage and reducing production bugs by 70%
+    • Collaborated with product and design teams to implement responsive UI components
+      resulting in 35% increase in mobile app user retention
+    • Developed GraphQL API server serving data to 3 different client applications
+      reducing client-side code by 40%
+
+    Technologies Used:
+      - Frontend: React, Redux, Next.js, Tailwind CSS
+      - Backend: Python, Node.js, PostgreSQL
+      - DevOps: Docker, AWS (EC2, S3, RDS, CloudFront)
+      - Tools: Git, JIRA, Postman, Jest, pytest
+
+
+JUNIOR FULL STACK DEVELOPER
+StartupXYZ, Fort Collins, Colorado | July 2018 – May 2019
+
+    Contributed to development of early-stage SaaS application using React and Node.js,
+    helping company launch MVP with 100+ beta users
+
+    • Built reusable React components achieving 30% reduction in development time
+      for new features
+    • Created REST APIs using Express.js and PostgreSQL handling authentication,
+      user management, and data operations
+    • Implemented responsive design using CSS Grid and Flexbox for
+      cross-device compatibility
+    • Participated in daily standups and participated in code reviews improving
+      code quality and knowledge sharing
+
+
+FREELANCE WEB DEVELOPER
+Self-employed | January 2017 – June 2018
+
+    Contracted to develop websites and web applications for 15+ clients
+
+    • Built 8 full-stack web applications using React and Node.js
+    • Designed and implemented WordPress sites with custom plugins and themes
+    • Optimized websites for performance, achieving average 90+ Google PageSpeed score
+    • Managed client relationships and delivered projects on schedule
+
+═══════════════════════════════════════════════════════════════════════════════
+
+EDUCATION
+
+BACHELOR OF SCIENCE IN COMPUTER SCIENCE
+University of Colorado Boulder | Graduated: May 2017
+GPA: 3.7/4.0
+Relevant Coursework: Data Structures, Algorithms, Database Systems, Web Development,
+                     Software Engineering, Computer Networks
+
+═══════════════════════════════════════════════════════════════════════════════
+
+CERTIFICATIONS & TRAINING
+
+    • AWS Certified Solutions Architect – Associate (2023)
+      Credential ID: AWS-SA-12345, Valid through 2026
+
+    • Google Cloud Professional Cloud Architect (2022)
+      Credential ID: GCP-PCA-67890, Valid through 2024
+
+    • Kubernetes Application Developer Certified (CKAD) (2023)
+      Credential ID: Linux-Foundation-5678
+
+    • Advanced Python Programming - DataCamp (2022)
+    • Complete React & Redux Course - Udemy (2021)
+    • Microservices Architecture - Coursera (2020)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PROJECTS & PORTFOLIO
+
+DataDash Platform
+    Real-time analytics dashboard built with React, Node.js, PostgreSQL, and AWS
+    Handles 50,000+ monthly metrics from 100+ connected applications
+    Link: github.com/janderson/datadash | Live: datadash-demo.app
+
+E-Commerce Platform Redesign
+    Led team to migrate legacy PHP application to modern React + Node.js stack
+    Achieved 60% improvement in page load times and 40% reduction in server costs
+    Technologies: React, Express, PostgreSQL, Docker, AWS
+
+Machine Learning Pipeline
+    Built Python-based ML pipeline for anomaly detection using scikit-learn and TensorFlow
+    Deployed on AWS EC2 with scheduled training and automated reports
+    Achieved 94% accuracy on test dataset
+
+Weather API Wrapper
+    Developed Node.js library wrapping multiple weather service APIs
+    Published to npm with 5K+ weekly downloads
+    Repository: github.com/janderson/weather-api-wrapper
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PUBLICATIONS & PRESENTATIONS
+
+    • "Scaling Microservices on Kubernetes" - Talk at Denver DevOps Meetup (2023)
+      Presentation covering best practices for containerization and orchestration
+
+    • "Building High-Performance React Applications" - Blog Post on Medium (2022)
+      5K+ reads covering React optimization techniques and performance monitoring
+
+    • "Database Query Optimization Techniques" - Webinar for JavaScript Alliances (2021)
+      40-minute technical presentation on SQL optimization and indexing strategies
+
+═══════════════════════════════════════════════════════════════════════════════
+
+OPEN SOURCE CONTRIBUTIONS
+
+    • React-Query-Utils: Core contributor, 500+ GitHub stars
+      Utility library for React Query hook simplification
+      Merged 15+ pull requests, resolved 20+ issues
+
+    • FastAPI-Boilerplate: Creator and maintainer, 2K+ GitHub stars
+      Starter template for FastAPI applications with Docker setup
+      1K+ monthly downloads via pip
+
+    • Tailwind CSS Extensions: Plugin developer, 200+ community stars
+      Custom Tailwind plugins for animation and spacing utilities
+
+═══════════════════════════════════════════════════════════════════════════════
+
+LANGUAGES
+
+    • English: Native/Fluent
+    • Spanish: Intermediate (conversational)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+AWARDS & RECOGNITION
+
+    • Tech Excellence Award - TechVision Inc. (2023)
+      Recognition for exceptional technical contributions and mentoring
+
+    • Innovation Champion - CloudScale Solutions (2021)
+      For proposing and implementing microservices migration strategy
+
+    • Rising Star Programmer - StartupXYZ (2019)
+      Most promising junior developer award
+
+═══════════════════════════════════════════════════════════════════════════════
+
+REFERENCES
+
+    Available upon request
+
+═══════════════════════════════════════════════════════════════════════════════
+```
+
+## How to Use This Resume with AI Resume Analyzer
+
+1. **Copy the text above**
+
+2. **Create a PDF file:**
+   - Create a new Word/Google Docs document
+   - Paste the resume text
+   - Save as PDF
+   - Or use any text editor and print to PDF
+
+3. **Upload to the application:**
+   - Go to http://localhost:3000
+   - Upload the PDF
+   - Click "Load Example" for the job description
+   - Click "Analyze My Resume"
+
+4. **Expected Results:**
+   - Match Score: 75-85% (high match)
+   - Technical Skills Found: 40+ skills
+   - Match Feedback: "Excellent match! You have most of the required skills."
+
+## Tips
+
+- Modify the resume to add/remove skills to test different match scores
+- Use the job description example to test different job types
+- Try removing sections to see how it affects the analysis
+- Change job titles to test different career levels
+
+Happy testing! 🚀

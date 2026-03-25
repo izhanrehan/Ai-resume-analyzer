@@ -1,0 +1,7 @@
+# 📂 D:\Ai-resume Analyzer\.gitignore
+.venv/
+.env
+__pycache__/
+venv/
+node_modules/
+build/
