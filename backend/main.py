@@ -6,6 +6,9 @@ import tempfile
 import os
 import json
 
+# 👈 Sahi tareeqay se Google Client top par import kiya
+from google import genai
+
 # Custom modules imports
 from gemini_ai import analyze_with_gemini
 from resume_parser import extract_text_from_pdf
@@ -27,6 +30,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Global Client Instance for Vercel efficiency
+client = genai.Client()
 
 # 📝 2. Schema Models
 class AnalyzeRequest(BaseModel):
@@ -51,7 +57,7 @@ class ExampleResponse(BaseModel):
 # 🌐 3. API Routes
 @app.get("/")
 def root():
-    return {"message": "Split API is running"}
+    return {"message": "Split API is running on Vercel!"}
 
 
 @app.get("/example-job", response_model=ExampleResponse)
@@ -64,9 +70,6 @@ async def get_example_job(title: Optional[str] = Query(None)):
         return ExampleResponse(description=example)
 
     try:
-        from google import genai
-        client = genai.Client()
-
         prompt = f"""
         You are an expert HR recruiter. Generate a realistic, concise job description (JD) 
         for the role of '{title}'. 
@@ -84,7 +87,6 @@ async def get_example_job(title: Optional[str] = Query(None)):
         return ExampleResponse(description=response.text.strip())
 
     except Exception as e:
-        print(f"Error generating sample job description: {str(e)}")
         fallback = f"Role Overview: Looking for a skilled {title}.\n\nRequirements:\n- Relevant tech stack experience.\n- Problem-solving skills.\n- Good communication."
         return ExampleResponse(description=fallback)
 
@@ -95,6 +97,7 @@ async def upload_resume(file: UploadFile = File(...)):
         if not file.filename.lower().endswith('.pdf'):
             raise HTTPException(status_code=400, detail="Only PDF files are allowed")
         
+        # Using Vercel-compatible in-memory safe temp tracking
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
             content = await file.read()
             tmp_file.write(content)
@@ -103,10 +106,6 @@ async def upload_resume(file: UploadFile = File(...)):
         try:
             resume_text = extract_text_from_pdf(tmp_file_path)
             
-            # 🤖 Generates dynamic Auto-Fills matching Job Specs
-            from google import genai
-            client = genai.Client()
-
             prompt = f"""
             You are an expert recruiter. Read this extracted resume text and automatically 
             infer the absolute best matching standard Job Title and matching Job Description for this candidate.
@@ -125,7 +124,14 @@ async def upload_resume(file: UploadFile = File(...)):
                 contents=prompt,
             )
 
-            clean_text = response.text.replace("```json", "").replace("```", "").strip()
+            # 🛠️ Heavy Sanitization for Vercel
+            clean_text = response.text.strip()
+            if clean_text.startswith("```json"):
+                clean_text = clean_text[7:]
+            if clean_text.endswith("```"):
+                clean_text = clean_text[:-3]
+            clean_text = clean_text.strip()
+
             ai_data = json.loads(clean_text)
 
             return {
@@ -140,7 +146,7 @@ async def upload_resume(file: UploadFile = File(...)):
                 os.remove(tmp_file_path)
                 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Vercel Serverless Trace: {str(e)}")
 
 
 @app.post("/analyze-resume", response_model=AnalysisResult)
@@ -195,4 +201,4 @@ async def analyze_resume(request: AnalyzeRequest):
             match_breakdown=match_breakdown
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Vercel Serverless Trace: {str(e)}")
