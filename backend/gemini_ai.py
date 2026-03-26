@@ -1,18 +1,12 @@
-# backend/gemini_ai.py
-
 from google import genai
 import os
 import json
 
 
 def get_genai_client():
-    """
-    Create Gemini client safely at runtime, not on module import.
-    """
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY is missing")
-
     return genai.Client(api_key=api_key)
 
 
@@ -53,7 +47,7 @@ Return ONLY a STRICT valid JSON object with this exact schema:
             contents=prompt,
         )
 
-        raw_text = response.text.strip()
+        raw_text = response.text.strip() if response.text else ""
         clean_text = raw_text.replace("```json", "").replace("```", "").strip()
 
         return json.loads(clean_text)
