@@ -63,7 +63,6 @@ class AutoJobProfile(BaseModel):
 
 @app.get("/")
 def root():
-    # ✅ Sirf ye aik hi root function rehna chahiye!
     return {"message": "AI Resume Analyzer API is LIVE on Vercel! 🚀🔥"}
 
 
@@ -127,7 +126,11 @@ async def upload_resume(file: UploadFile = File(...)):
             config={"response_mime_type": "application/json", "response_schema": AutoJobProfile},
         )
 
-        ai_data = json.loads(response.text)
+        try:
+            ai_data = json.loads(response.text)
+        except json.JSONDecodeError:
+            # Fallback if AI output is slightly distorted
+            ai_data = {"detected_title": "Software Engineer", "generated_jd": "Extracted profile was not perfectly parsable."}
 
         return {
             "success": True, 
