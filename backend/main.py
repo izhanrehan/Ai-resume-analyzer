@@ -1,12 +1,12 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 import tempfile
 import os
 import json
 
-# Standard top-level import
+# Standard top-level import for Google GenAI
 from google import genai
 
 # Custom modules imports
@@ -21,7 +21,7 @@ from similarity import (
 )
 
 # 🚀 1. App initialization
-app = FastAPI()
+app = FastAPI(title="AI Resume Analyzer API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -31,7 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global Client Instance for Vercel efficiency
+# Global Client Instance for Vercel Serverless efficiency
 client = genai.Client()
 
 # 📝 2. Schema Models
@@ -53,11 +53,17 @@ class AnalysisResult(BaseModel):
 class ExampleResponse(BaseModel):
     description: str
 
+# Schema for Strict Structured AI Output
+class AutoJobProfile(BaseModel):
+    detected_title: str = Field(description="The standard professional job title inferred from the resume context.")
+    generated_jd: str = Field(description="Standard concise job requirements and description matching the profile.")
+
 
 # 🌐 3. API Routes
 @app.get("/")
 def root():
-    return {"message": "Split API is running on Vercel!"}
+    # Adding emoji to trigger Git changes for Vercel!
+    return {"message": "AI Resume Analyzer API is LIVE on Vercel! 🚀"}
 
 
 @app.get("/example-job", response_model=ExampleResponse)
@@ -93,6 +99,7 @@ async def get_example_job(title: Optional[str] = Query(None)):
 
 @app.post("/upload-resume")
 async def upload_resume(file: UploadFile = File(...)):
+    tmp_file_path = None
     try:
         if not file.filename.lower().endswith('.pdf'):
             raise HTTPException(status_code=400, detail="Only PDF files are allowed")
@@ -102,54 +109,38 @@ async def upload_resume(file: UploadFile = File(...)):
             tmp_file.write(content)
             tmp_file_path = tmp_file.name
         
-        try:
-            resume_text = extract_text_from_pdf(tmp_file_path)
-            
-            prompt = f"""
-            You are an expert recruiter. Read this extracted resume text and automatically 
-            infer the absolute best matching standard Job Title and matching Job Description for this candidate.
-            
-            Resume: {resume_text[:3000]}
+        # Extract Text
+        resume_text = extract_text_from_pdf(tmp_file_path)
+        
+        prompt = f"""
+        You are an expert recruiter. Read this extracted resume text and automatically 
+        infer the absolute best matching standard Job Title and matching Job Description for this candidate.
+        
+        Resume: {resume_text[:3000]}
+        """
 
-            Return ONLY a strict pure JSON object with the exact format:
-            {{
-              "detected_title": "Example: Senior Frontend Engineer",
-              "generated_jd": "Requirements:\\n- 3+ years experience in React\\n- Strong UI skills..."
-            }}
-            """
+        # Using Structured Output to prevent JSON Parsing Errors
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
+            config={"response_mime_type": "application/json", "response_schema": AutoJobProfile},
+        )
 
-            response = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=prompt,
-            )
+        ai_data = json.loads(response.text)
 
-            # 🛠️ Highly Resilient JSON Sanitization 
-            clean_text = response.text.strip()
-            
-            # Removes markdown blocks if Gemini wrap them
-            if clean_text.startswith("```"):
-                # handles ```json and ```
-                clean_text = clean_text.split("\n", 1)[-1]
-            if clean_text.endswith("```"):
-                clean_text = clean_text.rsplit("\n", 1)[0]
-                
-            clean_text = clean_text.strip()
-
-            ai_data = json.loads(clean_text)
-
-            return {
-                "success": True, 
-                "resume_text": resume_text,
-                "auto_title": ai_data.get("detected_title", "Software Engineer"),
-                "auto_jd": ai_data.get("generated_jd", "Standard responsibilities based on profile context.")
-            }
-            
-        finally:
-            if os.path.exists(tmp_file_path):
-                os.remove(tmp_file_path)
+        return {
+            "success": True, 
+            "resume_text": resume_text,
+            "auto_title": ai_data.get("detected_title", "Software Engineer"),
+            "auto_jd": ai_data.get("generated_jd", "Standard responsibilities based on profile context.")
+        }
                 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Vercel Serverless Trace: {str(e)}")
+    
+    finally:
+        if tmp_file_path and os.path.exists(tmp_file_path):
+            os.remove(tmp_file_path)
 
 
 @app.post("/analyze-resume", response_model=AnalysisResult)
