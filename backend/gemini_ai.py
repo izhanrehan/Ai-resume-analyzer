@@ -11,9 +11,6 @@ def get_genai_client():
 
 
 def analyze_with_gemini(resume_text: str, job_description: str, manual_title: str = ""):
-    """
-    Uses Google GenAI to detect candidate role and compare it with the Job description.
-    """
     try:
         client = get_genai_client()
 

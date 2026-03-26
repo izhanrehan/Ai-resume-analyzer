@@ -1,15 +1,15 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Query, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional
 import tempfile
 import os
 import json
 
-from gemini_ai import analyze_with_gemini, get_genai_client
-from resume_parser import extract_text_from_pdf, get_resume_summary
-from skill_extractor import extract_skills
-from similarity import (
+from backend.gemini_ai import analyze_with_gemini, get_genai_client
+from backend.resume_parser import extract_text_from_pdf, get_resume_summary
+from backend.skill_extractor import extract_skills
+from backend.similarity import (
     calculate_similarity_score,
     find_missing_skills,
     calculate_match_breakdown,
