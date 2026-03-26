@@ -6,7 +6,7 @@ import tempfile
 import os
 import json
 
-# 👈 Sahi tareeqay se Google Client top par import kiya
+# Standard top-level import
 from google import genai
 
 # Custom modules imports
@@ -97,7 +97,6 @@ async def upload_resume(file: UploadFile = File(...)):
         if not file.filename.lower().endswith('.pdf'):
             raise HTTPException(status_code=400, detail="Only PDF files are allowed")
         
-        # Using Vercel-compatible in-memory safe temp tracking
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
             content = await file.read()
             tmp_file.write(content)
@@ -124,12 +123,16 @@ async def upload_resume(file: UploadFile = File(...)):
                 contents=prompt,
             )
 
-            # 🛠️ Heavy Sanitization for Vercel
+            # 🛠️ Highly Resilient JSON Sanitization 
             clean_text = response.text.strip()
-            if clean_text.startswith("```json"):
-                clean_text = clean_text[7:]
+            
+            # Removes markdown blocks if Gemini wrap them
+            if clean_text.startswith("```"):
+                # handles ```json and ```
+                clean_text = clean_text.split("\n", 1)[-1]
             if clean_text.endswith("```"):
-                clean_text = clean_text[:-3]
+                clean_text = clean_text.rsplit("\n", 1)[0]
+                
             clean_text = clean_text.strip()
 
             ai_data = json.loads(clean_text)
