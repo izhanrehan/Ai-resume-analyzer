@@ -60,10 +60,11 @@ class AutoJobProfile(BaseModel):
 
 
 # 🌐 3. API Routes
+
 @app.get("/")
 def root():
-    # Adding emoji to trigger Git changes for Vercel!
-    return {"message": "AI Resume Analyzer API is LIVE on Vercel! 🚀"}
+    # ✅ Sirf ye aik hi root function rehna chahiye!
+    return {"message": "AI Resume Analyzer API is LIVE on Vercel! 🚀🔥"}
 
 
 @app.get("/example-job", response_model=ExampleResponse)
