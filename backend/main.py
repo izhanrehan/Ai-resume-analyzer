@@ -5,15 +5,14 @@ from typing import Optional, List
 import tempfile
 import os
 import json
-
-# 🔑 1. Load Environment variables from .env first!
 from dotenv import load_dotenv
-load_dotenv() 
 
-# 📦 2. Standard top-level import
+# Load environment variables
+load_dotenv()
+
 from google import genai
 
-# 🛠️ 3. Custom modules imports (Cleaned for Vercel Option 1)
+# Custom modules
 from gemini_ai import analyze_with_gemini
 from resume_parser import extract_text_from_pdf
 from skill_extractor import extract_skills
@@ -21,10 +20,9 @@ from similarity import (
     calculate_similarity_score,
     find_missing_skills,
     calculate_match_breakdown,
-    format_score_feedback
+    format_score_feedback,
 )
 
-# 🚀 4. App initialization
 app = FastAPI()
 
 app.add_middleware(
@@ -35,14 +33,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global Client Instance for efficiency
-client = genai.Client()
 
-# 📝 5. Schema Models
+def get_genai_client():
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY is missing")
+    return genai.Client(api_key=api_key)
+
+
 class AnalyzeRequest(BaseModel):
     resume_text: str
     job_description: str
     job_title: Optional[str] = ""
+
 
 class AnalysisResult(BaseModel):
     resume_summary: str
@@ -54,11 +57,11 @@ class AnalysisResult(BaseModel):
     suggestions: List[str]
     match_breakdown: dict
 
+
 class ExampleResponse(BaseModel):
     description: str
 
 
-# 🌐 6. API Routes
 @app.get("/")
 def root():
     return {"message": "Split API is running locally and on Vercel! 🔥🚀"}
@@ -74,85 +77,100 @@ async def get_example_job(title: Optional[str] = Query(None)):
         return ExampleResponse(description=example)
 
     try:
+        client = get_genai_client()
+
         prompt = f"""
-        You are an expert HR recruiter. Generate a realistic, concise job description (JD) 
-        for the role of '{title}'. 
-        Include:
-        - Role Overview
-        - Key Requirements / Skills (3-4 bullet points)
-        Do not make it too long.
-        """
+You are an expert HR recruiter. Generate a realistic, concise job description (JD)
+for the role of '{title}'.
+
+Include:
+- Role Overview
+- Key Requirements / Skills (3-4 bullet points)
+
+Do not make it too long.
+"""
 
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model="gemini-2.5-flash",
             contents=prompt,
         )
 
-        return ExampleResponse(description=response.text.strip())
+        description = response.text.strip() if response.text else ""
+        if not description:
+            raise ValueError("Empty response from Gemini")
 
-    except Exception as e:
-        fallback = f"Role Overview: Looking for a skilled {title}.\n\nRequirements:\n- Relevant tech stack experience.\n- Problem-solving skills.\n- Good communication."
+        return ExampleResponse(description=description)
+
+    except Exception:
+        fallback = (
+            f"Role Overview: Looking for a skilled {title}.\n\n"
+            "Requirements:\n"
+            "- Relevant tech stack experience.\n"
+            "- Problem-solving skills.\n"
+            "- Good communication."
+        )
         return ExampleResponse(description=fallback)
 
 
 @app.post("/upload-resume")
 async def upload_resume(file: UploadFile = File(...)):
+    tmp_file_path = None
+
     try:
-        if not file.filename.lower().endswith('.pdf'):
+        if not file.filename or not file.filename.lower().endswith(".pdf"):
             raise HTTPException(status_code=400, detail="Only PDF files are allowed")
-        
-        tmp_file_path = None
+
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
             content = await file.read()
             tmp_file.write(content)
             tmp_file_path = tmp_file.name
-        
-        try:
-            resume_text = extract_text_from_pdf(tmp_file_path)
-            
-            prompt = f"""
-            You are an expert recruiter. Read this extracted resume text and automatically 
-            infer the absolute best matching standard Job Title and matching Job Description for this candidate.
-            
-            Resume: {resume_text[:3000]}
 
-            Return ONLY a strict pure JSON object with the exact format:
-            {{
-              "detected_title": "Example: Senior Frontend Engineer",
-              "generated_jd": "Requirements:\\n- 3+ years experience in React\\n- Strong UI skills..."
-            }}
-            """
+        resume_text = extract_text_from_pdf(tmp_file_path)
+        if not resume_text:
+            raise HTTPException(status_code=400, detail="Could not extract text from PDF")
 
-            response = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=prompt,
-            )
+        client = get_genai_client()
 
-            # 🛠️ Highly Resilient JSON Sanitization 
-            clean_text = response.text.strip()
-            
-            if clean_text.startswith("```"):
-                clean_text = clean_text.split("\n", 1)[-1]
-            if clean_text.endswith("```"):
-                clean_text = clean_text.rsplit("\n", 1)[0]
-                
-            clean_text = clean_text.strip()
+        prompt = f"""
+You are an expert recruiter. Read this extracted resume text and automatically
+infer the absolute best matching standard Job Title and matching Job Description for this candidate.
 
-            ai_data = json.loads(clean_text)
+Resume: {resume_text[:3000]}
 
-            return {
-                "success": True, 
-                "resume_text": resume_text,
-                "auto_title": ai_data.get("detected_title", "Software Engineer"),
-                "auto_jd": ai_data.get("generated_jd", "Standard responsibilities based on profile context.")
-            }
-            
-        finally:
-            if tmp_file_path and os.path.exists(tmp_file_path):
-                os.remove(tmp_file_path)
-                
+Return ONLY a strict pure JSON object with the exact format:
+{{
+  "detected_title": "Example: Senior Frontend Engineer",
+  "generated_jd": "Requirements:\\n- 3+ years experience in React\\n- Strong UI skills..."
+}}
+"""
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+        )
+
+        raw_text = response.text.strip() if response.text else ""
+        clean_text = raw_text.replace("```json", "").replace("```", "").strip()
+
+        ai_data = json.loads(clean_text)
+
+        return {
+            "success": True,
+            "resume_text": resume_text,
+            "auto_title": ai_data.get("detected_title", "Software Engineer"),
+            "auto_jd": ai_data.get(
+                "generated_jd",
+                "Standard responsibilities based on profile context.",
+            ),
+        }
+
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Vercel Serverless Trace: {str(e)}")
+    finally:
+        if tmp_file_path and os.path.exists(tmp_file_path):
+            os.remove(tmp_file_path)
 
 
 @app.post("/analyze-resume", response_model=AnalysisResult)
@@ -170,19 +188,21 @@ async def analyze_resume(request: AnalyzeRequest):
 
         resume_skills_dict = extract_skills(resume_text)
         job_skills_dict = extract_skills(context_description)
-        
-        resume_skills = resume_skills_dict.get('all', [])
-        job_skills = job_skills_dict.get('all', [])
-        
+
+        resume_skills = resume_skills_dict.get("all", [])
+        job_skills = job_skills_dict.get("all", [])
+
         match_score = calculate_similarity_score(
-            resume_text=resume_text, 
-            job_description=context_description, 
-            resume_skills=resume_skills, 
-            job_skills=job_skills
+            resume_text=resume_text,
+            job_description=context_description,
+            resume_skills=resume_skills,
+            job_skills=job_skills,
         )
-        
+
         missing_skills = find_missing_skills(resume_skills, job_skills)
-        match_breakdown = calculate_match_breakdown(resume_skills, job_skills, match_score)
+        match_breakdown = calculate_match_breakdown(
+            resume_skills, job_skills, match_score
+        )
         feedback = format_score_feedback(match_score)
 
         ai_missing = ai_data.get("missing_keywords_ai", [])
@@ -191,20 +211,21 @@ async def analyze_resume(request: AnalyzeRequest):
         return AnalysisResult(
             resume_summary=ai_data.get("ai_summary", "Summary failed to load."),
             resume_skills={
-                "technical": resume_skills_dict.get('technical', [])[:10],
-                "soft": resume_skills_dict.get('soft', [])[:5],
-                "all": resume_skills[:15]
+                "technical": resume_skills_dict.get("technical", [])[:10],
+                "soft": resume_skills_dict.get("soft", [])[:5],
+                "all": resume_skills[:15],
             },
             job_skills={
-                "technical": job_skills_dict.get('technical', [])[:10],
-                "soft": job_skills_dict.get('soft', [])[:5],
-                "all": job_skills[:15]
+                "technical": job_skills_dict.get("technical", [])[:10],
+                "soft": job_skills_dict.get("soft", [])[:5],
+                "all": job_skills[:15],
             },
             match_score=match_score,
             match_feedback=feedback,
             missing_skills=combined_missing,
             suggestions=ai_data.get("smart_suggestions", []),
-            match_breakdown=match_breakdown
+            match_breakdown=match_breakdown,
         )
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Vercel Serverless Trace: {str(e)}")
