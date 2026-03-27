@@ -6,36 +6,25 @@ import tempfile
 import os
 import json
 
-# 🔑 Load Environment variables from .env first!
+# 🔑 1. Load Environment variables from .env first!
 from dotenv import load_dotenv
 load_dotenv() 
 
-# Standard top-level import
+# 📦 2. Standard top-level import
 from google import genai
 
-# Custom modules imports
-try:
-    from backend.gemini_ai import analyze_with_gemini
-    from backend.resume_parser import extract_text_from_pdf
-    from backend.skill_extractor import extract_skills
-    from backend.similarity import (
-        calculate_similarity_score,
-        find_missing_skills,
-        calculate_match_breakdown,
-        format_score_feedback
-    )
-except ModuleNotFoundError:
-    from gemini_ai import analyze_with_gemini
-    from resume_parser import extract_text_from_pdf
-    from skill_extractor import extract_skills
-    from similarity import (
-        calculate_similarity_score,
-        find_missing_skills,
-        calculate_match_breakdown,
-        format_score_feedback
-    )
+# 🛠️ 3. Custom modules imports (Cleaned for Vercel Option 1)
+from gemini_ai import analyze_with_gemini
+from resume_parser import extract_text_from_pdf
+from skill_extractor import extract_skills
+from similarity import (
+    calculate_similarity_score,
+    find_missing_skills,
+    calculate_match_breakdown,
+    format_score_feedback
+)
 
-# 🚀 1. App initialization
+# 🚀 4. App initialization
 app = FastAPI()
 
 app.add_middleware(
@@ -49,7 +38,7 @@ app.add_middleware(
 # Global Client Instance for efficiency
 client = genai.Client()
 
-# 📝 2. Schema Models
+# 📝 5. Schema Models
 class AnalyzeRequest(BaseModel):
     resume_text: str
     job_description: str
@@ -69,7 +58,7 @@ class ExampleResponse(BaseModel):
     description: str
 
 
-# 🌐 3. API Routes
+# 🌐 6. API Routes
 @app.get("/")
 def root():
     return {"message": "Split API is running locally and on Vercel! 🔥🚀"}
